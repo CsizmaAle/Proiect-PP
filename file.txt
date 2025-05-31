@@ -1,0 +1,16 @@
+2
+2
+Popescu Ana
+Matematica
+9 12 3 2024 10 15 4 2024
+12 3 2024 0 20 4 2024 1
+Romana
+8 10 3 2024
+18 3 2024 0
+Ionescu Vlad
+Matematica
+7 14 2 2024
+14 2 2024 0
+Informatica
+10 10 3 2024 9 11 3 2024
+12 3 2024 1 13 3 2024 0
