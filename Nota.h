@@ -1,5 +1,5 @@
-#ifndef NOTA_H
-#define NOTA_H
+#ifndef __NOTA_H
+#define __NOTA_H
 
 #include "Data.h"
 
@@ -7,7 +7,7 @@ class Nota {
     int valoare;
     Data data;
 public:
-    Nota(int nota, Data d);
+    Nota(int, Data );
     int getValoare() const;
     Data getData() const;
     void afiseaza() const;

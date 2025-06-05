@@ -1,4 +1,5 @@
 #include "Nota.h"
+#include "Data.h"
 #include <iostream>
 using namespace std;
 

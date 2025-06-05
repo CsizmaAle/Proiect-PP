@@ -20,11 +20,12 @@ public:
     void stergeNota(const Nota&);
 
     void adaugaAbsenta(const Absenta&);
-    void stergeUltimaAbsenta();
 
     void afiseazaNote() const;
+    void afiseazaNumarAbsente() const;
     void afiseazaAbsente() const;
     string getDenumire() const;
+
 };
 
 #endif

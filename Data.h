@@ -8,7 +8,8 @@ public:
     int getZi();
     int getLuna();
     int getAn();
-    void afiseaza();
+    void afiseaza() const;
+    bool operator==(const Data&)const;
 private:
     bool esteAnBisect(int an);
     int zileInLuna(int luna, int an);

@@ -1,5 +1,5 @@
 #include <iostream>
-#include "data.h"
+#include "Data.h"
 using namespace std;
 /*
  Constructorul clasei Data valideaza si seteaza ziua, luna si anul unui obiect de tip Data
@@ -74,8 +74,14 @@ int Data::getAn()
  Metoda care afiseaza data curenta in formatul dd/mm/yyyy
  Daca ziua sau luna este mai mica decat 10, se adauga un 0 in fata pentru a pastra formatul corect
 */
-void Data::afiseaza() {
+void Data::afiseaza() const 
+{
     cout << (zi < 10 ? "0" : "") << zi << "/"
         << (luna < 10 ? "0" : "") << luna << "/"
         << an << endl;
+}
+
+bool Data::operator==(const Data& d)const
+{
+    return zi == d.zi && luna == d.luna && an == d.an;
 }
