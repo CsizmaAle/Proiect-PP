@@ -1,0 +1,325 @@
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <vector>
+#include <string>
+#include "Materie.h"
+#include "Nota.h"
+#include "Absenta.h"
+#include "Data.h"
+#include "Student.h"
+
+using namespace std;
+
+void scrieCatalog(const vector<Student>& studenti, int nr_materii);
+vector<Student> incarcaCatalog(int& nr_materii);
+void adaugaNota(const string& nume_elev, const string& materie, int nota, const Data& data);
+void stergeNota(const string& nume_elev, const string& materie, int nota, const Data& data);
+void adaugaAbsenta(const string& nume_elev, const string& materie, const Data& data);
+void vizualizareElev(const string& elev_cautat);
+void vizualizareCatalog();
+
+int main(int argc, char* argv[]) {
+    if (argc < 2) {
+        cout << "Nu ai specificat nicio comanda.\n";
+        return 1;
+    }
+
+    string comanda = argv[1];
+
+    if (comanda == "vizualizare_elev" && argc == 4) {
+        string nume_complet = string(argv[2]) + " " + string(argv[3]);
+        vizualizareElev(nume_complet);
+    } else if (comanda == "adaugare_nota" && argc == 9) {
+        string nume_complet = string(argv[2]) + " " + string(argv[3]);
+        string materie = argv[4];
+        int nota = stoi(argv[5]);
+        int zi = stoi(argv[6]);
+        int luna = stoi(argv[7]);
+        int an = stoi(argv[8]);
+        adaugaNota(nume_complet, materie, nota, Data(zi, luna, an));
+
+    } else if (comanda == "stergere_nota" && argc == 9) {
+        string nume_complet = string(argv[2]) + " " + string(argv[3]);
+        string materie = argv[4];
+        int nota = stoi(argv[5]);
+        int zi = stoi(argv[6]);
+        int luna = stoi(argv[7]);
+        int an = stoi(argv[8]);
+        stergeNota(nume_complet, materie, nota, Data(zi, luna, an));
+
+    } else if (comanda == "adaugare_absenta" && argc == 8) {
+        string nume_complet = string(argv[2]) + " " + string(argv[3]);
+        string materie = argv[4];
+        int zi = stoi(argv[5]);
+        int luna = stoi(argv[6]);
+        int an = stoi(argv[7]);
+        adaugaAbsenta(nume_complet, materie, Data(zi, luna, an));
+
+    } else {
+        cout << "Comanda necunoscuta sau argumente insuficiente.\n";
+    }
+
+    return 0;
+}
+
+/*
+void scrieCatalog(const vector<Student>& studenti, int nr_materii) {
+
+    ofstream fout("../../catalog.txt");
+    if (!fout.is_open()) {
+        cerr << "Eroare la scrierea in catalog.txt\n";
+        return;
+    }
+
+    fout << studenti.size() << "\n";
+    fout << nr_materii << "\n";
+
+    for (const auto& elev : studenti) {
+        fout << elev.getNume() << "\n";
+        const vector<Materie>& materii = elev.getMaterii();
+
+        for (const auto& materie : materii) {
+            fout << materie.getDenumire() << "\n";
+
+            // NOTE
+            const vector<Nota>& note = materie.getNote();
+            if (!note.empty())
+            {
+
+                for (const auto& nota : note) {
+                    nota.afiseaza();
+
+                    fout << nota.getValoare() << " "
+                         << nota.getData().getZi() << " "
+                         << nota.getData().getLuna() << " "
+                         << nota.getData().getAn() << " ";
+                    cout<<nota.getValoare() << " "
+                         << nota.getData().getZi() << " "
+                         << nota.getData().getLuna() << " "
+                         << nota.getData().getAn() << " ";
+
+
+                }
+            }
+            fout << "\n";
+
+            const vector<Absenta>& absente = materie.getAbsente();
+            if (!absente.empty()) {
+                for (const auto& abs : absente) {
+
+
+                    fout << abs.getData().getZi() << " "
+                         << abs.getData().getLuna() << " "
+                         << abs.getData().getAn() << " "
+                         << (abs.esteMotivata() ? 1 : 0) << " ";
+
+                }
+            }
+            fout << "\n";
+        }
+    }
+
+    fout.close();
+}
+*/
+vector<Student> incarcaCatalog(int& nr_materii) {
+    ifstream fin("../../catalog.txt");
+    vector<Student> studenti;
+
+    if (!fin.is_open()) {
+        cerr << "Eroare la deschiderea catalog.txt\n";
+        return studenti;
+    }
+
+    int nr_elevi;
+    fin >> nr_elevi >> nr_materii;
+    fin.ignore();
+
+    for (int i = 0; i < nr_elevi; ++i) {
+        string nume_elev;
+        getline(fin, nume_elev);
+        Student elev(nume_elev, nr_materii);
+
+        for (int j = 0; j < nr_materii; ++j) {
+            string materie;
+            getline(fin, materie);
+            Materie m(materie);
+
+            string linie_note;
+            getline(fin, linie_note);
+            if (!linie_note.empty()) {
+                istringstream iss_note(linie_note);
+                int val, zi, luna, an;
+                while (iss_note >> val >> zi >> luna >> an) {
+                    m.adaugaNota(Nota(val, Data(zi, luna, an)));
+                }
+            }
+
+            string linie_absente;
+            getline(fin, linie_absente);
+            if (!linie_absente.empty()) {
+                istringstream iss_absente(linie_absente);
+                int zi, luna, an, motivat;
+                while (iss_absente >> zi >> luna >> an >> motivat) {
+                    m.adaugaAbsenta(Absenta(zi, luna, an, motivat == 1));
+                }
+            }
+
+            elev.getMaterii().push_back(m);
+        }
+
+        studenti.push_back(elev);
+    }
+
+    fin.close();
+    return studenti;
+}
+
+void vizualizareElev(const string& elev_cautat) {
+    ifstream fin("../../catalog.txt");
+
+    if (!fin.is_open()) {
+        cerr << "Eroare la deschiderea catalog.txt\n";
+        return;
+    }
+
+    int nr_elevi, nr_materii;
+    fin >> nr_elevi >> nr_materii;
+    fin.ignore();
+
+    for (int i = 0; i < nr_elevi; ++i) {
+        string nume_elev;
+        getline(fin, nume_elev);
+
+        if (nume_elev == elev_cautat) {
+            cout << "Elev: " << nume_elev << "\n";
+
+            for (int j = 0; j < nr_materii; ++j) {
+                string materie;
+                getline(fin, materie);
+
+                Materie m(materie);
+
+                string linie_note;
+                getline(fin, linie_note);
+                istringstream iss_note(linie_note);
+                int nota, zi, luna, an;
+                while (iss_note >> nota >> zi >> luna >> an) {
+                    m.adaugaNota(Nota(nota, Data(zi, luna, an)));
+                }
+
+                string linie_absente;
+                getline(fin, linie_absente);
+                istringstream iss_absente(linie_absente);
+                int motivat;
+                while (iss_absente >> zi >> luna >> an >> motivat) {
+                    m.adaugaAbsenta(Absenta(zi, luna, an, motivat == 1));
+                }
+
+                cout << "  Materie: " << materie << "\n";
+                m.afiseazaNote();
+                m.afiseazaAbsente();
+            }
+
+            fin.close();
+            return;
+        } else {
+            for (int j = 0; j < nr_materii; ++j) {
+                string tmp;
+                getline(fin, tmp);
+                getline(fin, tmp);
+                getline(fin, tmp);
+            }
+        }
+    }
+
+    cout << "Elevul \"" << elev_cautat << "\" nu a fost gasit.\n";
+    fin.close();
+}
+
+void adaugaNota(const string& nume_elev, const string& materie, int nota, const Data& data) {
+    if (nota < 1 || nota > 10) {
+        cout << "Nota invalida! Trebuie sa fie intre 1 si 10.\n";
+        return;
+    }
+    if (!data.esteValida()) {
+        cout << "Data invalida!\n";
+        return;
+    }
+
+    int nr_materii;
+    auto studenti = incarcaCatalog(nr_materii);
+
+    for (auto& elev : studenti) {
+        if (elev.getNume() == nume_elev) {
+            Materie* m = elev.gasireMaterie(materie);
+            if (m) {
+                m->adaugaNota(Nota(nota, data));
+                scrieCatalog(studenti, nr_materii);
+                cout << "Nota adaugata cu succes.\n";
+                return;
+            }
+        }
+    }
+
+    cout << "Elevul sau materia nu a fost gasita.\n";
+}
+
+void stergeNota(const string& nume_elev, const string& materie, int nota, const Data& data) {
+    int nr_materii;
+    vector <Student> studenti = incarcaCatalog(nr_materii);
+
+    bool nota_stearsa = false;
+
+    for (auto& elev : studenti) {
+        if (elev.getNume() == nume_elev) {
+            Materie* m = elev.gasireMaterie(materie);
+            if (m) {
+                size_t before = m->getNote().size();
+                m->stergeNota(Nota(nota, data));
+                size_t after = m->getNote().size();
+
+                if (after < before) {
+                    nota_stearsa = true;
+                    cout << "Nota stearsa cu succes.\n";
+                } else {
+                    cout << "Nota nu a fost gasita.\n";
+                }
+            }
+        }
+    }
+
+    if (nota_stearsa) {
+        for(auto s:studenti)
+            s.afisare();
+        scrieCatalog(studenti, nr_materii);
+    } else {
+        cout << "Fisierul nu a fost modificat.\n";
+    }
+}
+
+void adaugaAbsenta(const string& nume_elev, const string& materie, const Data& data) {
+    if (!data.esteValida()) {
+        cout << "Data invalida!\n";
+        return;
+    }
+
+    int nr_materii;
+    auto studenti = incarcaCatalog(nr_materii);
+
+    for (auto& elev : studenti) {
+        if (elev.getNume() == nume_elev) {
+            Materie* m = elev.gasireMaterie(materie);
+            if (m) {
+                m->adaugaAbsenta(Absenta(data.getZi(), data.getLuna(), data.getAn(), false));
+                scrieCatalog(studenti, nr_materii);
+                cout << "Absenta adaugata cu succes.\n";
+                return;
+            }
+        }
+    }
+
+    cout << "Elevul sau materia nu a fost gasita.\n";
+}
+
