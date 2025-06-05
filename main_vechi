@@ -1,0 +1,147 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <sstream>
+#include <vector>
+#include "Catalog.h"
+#include "Materie.h"
+#include "Nota.h"
+#include "Absenta.h"
+#include "Data.h"
+
+using namespace std;
+
+void vizualizareElev(const string& elev_cautat) {
+    ifstream fin("../../catalog.txt");
+
+    if (!fin.is_open()) {
+        cerr << "Eroare la deschiderea catalog.txt\n";
+        return;
+    }
+
+    int nr_elevi, nr_materii;
+    fin >> nr_elevi >> nr_materii;
+    fin.ignore();
+
+    for (int i = 0; i < nr_elevi; ++i) {
+        string nume_elev;
+        getline(fin, nume_elev);
+
+        if (nume_elev == elev_cautat) {
+            cout << "Elev: " << nume_elev << "\n";
+
+            for (int j = 0; j < nr_materii; ++j) {
+                string materie;
+                getline(fin, materie);
+
+                Materie m(materie);
+
+                string linie_note;
+                getline(fin, linie_note);
+                istringstream iss_note(linie_note);
+                int nota, zi, luna, an;
+                while (iss_note >> nota >> zi >> luna >> an) {
+                    m.adaugaNota(Nota(nota, Data(zi, luna, an)));
+                }
+
+                string linie_absente;
+                getline(fin, linie_absente);
+                istringstream iss_absente(linie_absente);
+                int motivat;
+                while (iss_absente >> zi >> luna >> an >> motivat) {
+                    m.adaugaAbsenta(Absenta(zi, luna, an, motivat == 1));
+                }
+
+                m.afiseazaNote();
+                m.afiseazaAbsente();
+            }
+
+            fin.close();
+            return;
+        } else {
+            for (int j = 0; j < nr_materii; ++j) {
+                string materie;
+                getline(fin, materie);
+                string tmp;
+                getline(fin, tmp); // linie note
+                getline(fin, tmp); // linie absente
+            }
+        }
+    }
+
+    cout << "Elevul \"" << elev_cautat << "\" nu a fost gasit.\n";
+    fin.close();
+}
+
+void vizualizareCatalog() {
+    ifstream fin("../../catalog.txt");
+
+    if (!fin.is_open()) {
+        cerr << "Eroare la deschiderea catalog.txt\n";
+        return;
+    }
+
+    int nr_elevi, nr_materii;
+    fin >> nr_elevi >> nr_materii;
+    fin.ignore();
+
+    for (int i = 0; i < nr_elevi; ++i) {
+        string nume_elev;
+        getline(fin, nume_elev);
+        cout << "Elev: " << nume_elev << "\n";
+
+        for (int j = 0; j < nr_materii; ++j) {
+            string materie;
+            getline(fin, materie);
+
+            Materie m(materie);
+
+            string linie_note;
+            getline(fin, linie_note);
+            istringstream iss_note(linie_note);
+            int nota, zi, luna, an;
+            while (iss_note >> nota >> zi >> luna >> an) {
+                m.adaugaNota(Nota(nota, Data(zi, luna, an)));
+            }
+
+            string linie_absente;
+            getline(fin, linie_absente);
+            istringstream iss_absente(linie_absente);
+            int motivat;
+            while (iss_absente >> zi >> luna >> an >> motivat) {
+                m.adaugaAbsenta(Absenta(zi, luna, an, motivat == 1));
+            }
+
+            cout << "  Materie: " << materie << "\n";
+            m.afiseazaNote();
+            m.afiseazaAbsente();
+        }
+    }
+
+    fin.close();
+}
+
+int main(int argc, char* argv[]) {
+    if (argc < 2) {
+        cout << "Nu ai specificat nicio comanda.\n";
+        return 1;
+    }
+
+    string comanda = argv[1];
+
+    if (comanda == "vizualizare_elev" && argc >= 3) {
+        string elev_cautat = argv[2];
+        for (int i = 3; i < argc; ++i) {
+            elev_cautat += " ";
+            elev_cautat += argv[i];
+        }
+        vizualizareElev(elev_cautat);
+    } else if (comanda == "vizualizare_catalog") {
+        vizualizareCatalog();
+    } else {
+        cout<<argv[1]<<endl<<"aceasta nu";
+        cout << "Comanda necunoscuta sau argumente insuficiente.\n";
+    }
+
+    return 0;
+}
