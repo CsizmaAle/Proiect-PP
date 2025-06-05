@@ -56,12 +56,6 @@ int Data::getZi()
 
 int Data::getLuna()
 {
-    const char luni[12][15] = {
-        "Ianuarie", "Februarie", "Martie", "Aprilie",
-        "Mai", "Iunie", "Iulie", "August",
-        "Septembrie", "Octombrie", "Noiembrie", "Decembrie"
-    };
-    //cout<< luni[luna-1]<<" ";
     return luna;
 }
 
@@ -78,7 +72,7 @@ void Data::afiseaza() const
 {
     cout << (zi < 10 ? "0" : "") << zi << "/"
         << (luna < 10 ? "0" : "") << luna << "/"
-        << an << endl;
+        << an;
 }
 
 bool Data::operator==(const Data& d)const

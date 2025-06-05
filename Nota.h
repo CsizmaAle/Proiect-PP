@@ -11,6 +11,7 @@ public:
     int getValoare() const;
     Data getData() const;
     void afiseaza() const;
+
 };
 
 #endif

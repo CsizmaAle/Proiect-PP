@@ -21,10 +21,11 @@ public:
 
 	string getNume() const;
 	vector <Materie>& getMaterii();
-	void adaugaStudent(const string&, const Student&);
+	friend Student adaugaStudent(const string&, const Student&);
 
 	void afisare() const;
 	Materie* gasireMaterie(const string&);
+	void adaugaMaterie(const Materie&);
 };
 
 

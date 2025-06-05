@@ -14,6 +14,8 @@ Data Nota::getData() const {
 }
 
 void Nota::afiseaza() const {
-    cout << "Nota: " << valoare << " | Data: ";
+    cout << valoare << " (";
     data.afiseaza();
+    cout << "); ";
 }
+

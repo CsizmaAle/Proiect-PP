@@ -26,9 +26,10 @@ void Materie::adaugaAbsenta(const Absenta& a) {
 
 
 void Materie::afiseazaNote() const {
-    //cout << "Note la " << denumire << ":\n";
+    cout << "Note: ";
     for (const auto& n : note)
         n.afiseaza();
+    cout << endl;
 }
 
 void Materie::afiseazaNumarAbsente() const {
@@ -42,6 +43,18 @@ string Materie::getDenumire() const {
 
 void Materie::afiseazaAbsente() const 
 {
+    cout << "Absente: ";
     for (const auto &a : absente)
+    {
         a.afisare();
+    }
+    cout << endl;
+}
+
+vector<Nota> Materie::getNote() const {
+    return note;
+}
+
+vector<Absenta>& Materie::getAbsente() {
+    return absente;
 }

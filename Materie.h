@@ -26,6 +26,9 @@ public:
     void afiseazaAbsente() const;
     string getDenumire() const;
 
+    vector<Nota> getNote() const;
+    vector<Absenta>& getAbsente();
+
 };
 
 #endif

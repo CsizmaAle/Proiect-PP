@@ -14,6 +14,11 @@ Absenta::~Absenta()
 
 }
 
+Absenta::Absenta(int zi, int luna, int an, bool motiv):data(Data(zi,luna,an)),motivat(motiv)
+{
+
+}
+
 void Absenta::motivareAbsenta()
 {
 	this->motivat = true;
@@ -26,10 +31,17 @@ bool Absenta::sameDate(const Data& d) const
 
 void Absenta::afisare() const
 {
-	cout << "Data: ";
 	data.afiseaza();
 	if (this->motivat)
-		cout << "(motivata); ";
+		cout << " (motivata); ";
 	else
-		cout << "(nemotivata); ";
+		cout << " (nemotivata); ";
+}
+
+Data Absenta::getData() const {
+	return data;
+}
+
+bool Absenta::getMotivata() const {
+	return motivat;
 }

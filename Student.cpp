@@ -27,26 +27,29 @@ vector <Materie>& Student::getMaterii()
 	return informatii_elev;
 }
 
-void Student::adaugaStudent(const string& nume, const Student& model)
-{
+Student adaugaStudent(const string& nume, const Student& model) {
 	Student nou(nume);
-	for (const auto& materie : model.informatii_elev)
-	{
+	for (const auto& materie : model.informatii_elev) {
 		Materie copieMaterie(materie.getDenumire());
 		nou.informatii_elev.push_back(copieMaterie);
 	}
 	nou.numar_materii = model.numar_materii;
+	return nou;
 }
+
+
 
 void Student::afisare() const
 {
-	cout << "Elev: " << nume_elev << "\n";
+	cout << endl<<"Elev: " << nume_elev << "\n";
 	for (const auto& m : informatii_elev)
 	{
 		cout << m.getDenumire() << endl;
-		cout << "Note: "; m.afiseazaNote();
-		cout << endl << "Absente: "; m.afiseazaAbsente();
+		 m.afiseazaNote();
+		 m.afiseazaAbsente();
+		cout << endl;
 	}
+	
 }
 Materie* Student::gasireMaterie(const string& nume)
 {
@@ -54,4 +57,8 @@ Materie* Student::gasireMaterie(const string& nume)
 		if (m.getDenumire() == nume)
 			return &m;
 	return nullptr;
+}
+
+void Student::adaugaMaterie(const Materie& m) {
+	informatii_elev.push_back(m);
 }

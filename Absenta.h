@@ -11,10 +11,15 @@ class Absenta {
 
 public:
 	Absenta(Data, bool);
+	Absenta(int, int, int, bool);
 	~Absenta();
 	void motivareAbsenta();
 	void afisare() const;
 	bool sameDate(const Data& d) const;
+
+	Data getData() const;
+	bool getMotivata() const;
+
 };
 
 
