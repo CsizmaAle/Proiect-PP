@@ -63,7 +63,7 @@ int main(int argc, char* argv[]) {
     return 0;
 }
 
-/*
+
 void scrieCatalog(const vector<Student>& studenti, int nr_materii) {
 
     ofstream fout("../../catalog.txt");
@@ -77,24 +77,20 @@ void scrieCatalog(const vector<Student>& studenti, int nr_materii) {
 
     for (const auto& elev : studenti) {
         fout << elev.getNume() << "\n";
-        const vector<Materie>& materii = elev.getMaterii();
+        const vector<Materie>& materii = elev.getMateriiConst();
 
         for (const auto& materie : materii) {
             fout << materie.getDenumire() << "\n";
 
             // NOTE
             const vector<Nota>& note = materie.getNote();
+
             if (!note.empty())
             {
-
-                for (const auto& nota : note) {
-                    nota.afiseaza();
-
+                    for(const auto& nota:note)
+                    {
+                    cout<<"Ce aiiii???"<<endl;
                     fout << nota.getValoare() << " "
-                         << nota.getData().getZi() << " "
-                         << nota.getData().getLuna() << " "
-                         << nota.getData().getAn() << " ";
-                    cout<<nota.getValoare() << " "
                          << nota.getData().getZi() << " "
                          << nota.getData().getLuna() << " "
                          << nota.getData().getAn() << " ";
@@ -117,10 +113,69 @@ void scrieCatalog(const vector<Student>& studenti, int nr_materii) {
                 }
             }
             fout << "\n";
+
+
         }
     }
 
     fout.close();
+}
+/*
+void scrieCatalog(const vector<Student>& studenti, int nr_materii) {
+    // 1. Scrie în catalog2.txt
+    ofstream temp("../../catalog2.txt", ios::trunc);
+    if (!temp.is_open()) {
+        cerr << "Eroare la scrierea in catalog2.txt\n";
+        return;
+    }
+
+    temp << studenti.size() << "\n";
+    temp << nr_materii << "\n";
+
+    for (const auto& elev : studenti) {
+        temp << elev.getNume() << "\n";
+        const vector<Materie>& materii = elev.getMaterii();
+
+        for (const auto& materie : materii) {
+            temp << materie.getDenumire() << "\n";
+
+            const vector<Nota>& note = materie.getNote();
+            for (const auto& nota : note) {
+                temp << nota.getValoare() << " "
+                     << nota.getData().getZi() << " "
+                     << nota.getData().getLuna() << " "
+                     << nota.getData().getAn() << " ";
+            }
+            temp << "\n";
+
+            const vector<Absenta>& absente = materie.getAbsente();
+            for (const auto& abs : absente) {
+                temp << abs.getData().getZi() << " "
+                     << abs.getData().getLuna() << " "
+                     << abs.getData().getAn() << " "
+                     << (abs.esteMotivata() ? 1 : 0) << " ";
+            }
+            temp << "\n";
+        }
+    }
+    temp.close();
+
+    // 2. Copiază din catalog2.txt în catalog.txt
+    ifstream in("../../catalog2.txt");
+    ofstream out("../../catalog.txt", ios::trunc);
+
+    if (!in.is_open() || !out.is_open()) {
+        cerr << "Eroare la copierea in catalog.txt\n";
+        return;
+    }
+
+    string linie;
+    while (getline(in, linie)) {
+        out << linie << "\n";
+    }
+
+    in.close();
+    out.close();
 }
 */
 vector<Student> incarcaCatalog(int& nr_materii) {
@@ -166,7 +221,7 @@ vector<Student> incarcaCatalog(int& nr_materii) {
                 }
             }
 
-            elev.getMaterii().push_back(m);
+            elev.getMateriiRef().push_back(m);
         }
 
         studenti.push_back(elev);
@@ -322,4 +377,5 @@ void adaugaAbsenta(const string& nume_elev, const string& materie, const Data& d
 
     cout << "Elevul sau materia nu a fost gasita.\n";
 }
+
 
