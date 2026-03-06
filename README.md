@@ -1,4 +1,7 @@
 # Proiect de Programare/ C++
+
+>**Last update:** June 2025  
+
 ## Sistem catalog online
 
 > **Nota:** Acest proiect are scop educativ si reprezinta o solutie originala. 
